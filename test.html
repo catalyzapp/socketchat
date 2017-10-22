@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://localhost:5000');
+    socket.on('connect', function() {
+        socket.emit('test', {data: 'I\'m connected!'});
+        socket.emit('join', { room: 'test' })
+        socket.on('joined', function(data){
+            console.log(data)
+        })        
+    });
+    function handleInput(){
+        var input = document.getElementById("m").value
+        var h4 = document.getElementById("ms")
+        h4.innerText = ""        
+        socket.emit('send_msg', { data: input, room: 'test', isMentor: true })
+        socket.on('msg_sent', function(data) {
+            h4.innerText = data['data']
+        })
+        input.value = ""
+    }
+</script>
+<body>
+    <input id="m" type="text" autocomplete="off" /><button onclick="handleInput()">Send</button>
+    <h4 id="ms"></h4>
+</body>
+</html>
