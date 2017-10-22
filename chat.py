@@ -7,7 +7,7 @@ app.config['SECRET_KEY'] = 'socketapp'
 app.config['PORT'] = 8000
 socketio = SocketIO(app)
 
-messages = {}
+mentor_scores = {}
 
 @socketio.on('test')
 def test_socket(mesg):
@@ -24,9 +24,10 @@ def join(message):
 
 @socketio.on('leave')
 def leave(message):
-    room = message['room']
+    mentor = message['mentor']
+    mentee = message['mentee']
+    room = mentee + mentor
     leave_room(room)
-    del messages[room]
     emit('left', {'data': 'leaving room'})
 
 
@@ -36,7 +37,7 @@ def send_room_message(message):
     data = message['data']
     mentor = message['mentor']
     mentee = message['mentee']
-    if isMentor:
+    if _id == mentor:
         headers = {'Ocp-Apim-Subscription-Key': config.mskey}
         resp = requests.post('https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/languages', headers=headers, json={ 'documents': [{'id': 1, 'text': data }]})
         json_resp = resp.json()
@@ -45,12 +46,11 @@ def send_room_message(message):
         print(language)
         sentiment = requests.post('https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment', headers=headers, json={ 'documents': [{'id': 1, 'text': data, 'language': language }]})
         score = pydash.get(sentiment.json(), 'documents.0.score')
-        if int(score) < 70:
-            emit('msg_sent', {   } )
-        print(sentiment.json())
-    
-
-    emit('msg_sent', {'data':data, '_id': _id }, room=room)
+        print(score)
+        if int(score) < 65:
+            emit('msg_sent', { _id: mentor, data: 'we have not sent your message'   } )
+    else:
+        emit('msg_sent', {'data':data, '_id': _id }, room=room)
 
 
 @socketio.on('disconnect')

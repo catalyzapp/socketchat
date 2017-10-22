@@ -5,7 +5,7 @@
 /<trigger-event>
      <{event data}>
      /<response-event>
-        <{response-data}>
+        <{response data}>
 ```
 
 
@@ -17,7 +17,7 @@
 
 ```
 
-* **API EndPoints**
+* **API End Points**
 
 ```
 /join
@@ -28,20 +28,21 @@
 
 ```
 /leave
-    { room: <room-id> }
+    { mentor: <mentor-id>, mentee: <mentee-id> }
     /left
         {  data: 'leaving room' }
 ```
 
 ```
 /send_msg
-    { data: <messsage>, mentor: <mentor-id>, mentee: <mentee-id>, _id: <mentee-id|mentor-id>  }
+    { data: <messsage>, mentor: <mentor-id>, mentee: <mentee-id>, _id: <sender-id>, lang: <prefered-lang>  }
     /msg_sent
-        { data: <message>, isMentor: <true|false>, mentorOnly: <true|false> }
+        { data: <message>, _id: <sender-id> }
 ```
 
 ```
 /disconnect
+    { mentor: <mentor-id>, mentee: <mentee-id>  }
     /disconnected
         { data: disconnected }
 ```
