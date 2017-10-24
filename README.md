@@ -35,7 +35,7 @@
 
 ```
 /send_msg
-    { data: <messsage>, mentor: <mentor-id>, mentee: <mentee-id>, _id: <sender-id>, lang: <prefered-lang>  }
+    { data: <messsage>, mentor: <mentor-id>, mentee: <mentee-id>, _id: <sender-id>, lang: <en|es>  }
     /msg_sent
         { data: <message>, _id: <sender-id> }
 ```

@@ -11,7 +11,8 @@
     var socket = io.connect('http://localhost:5000');
     socket.on('connect', function() {
         socket.emit('test', {data: 'I\'m connected!'});
-        socket.emit('join', { room: 'test' })
+        socket.emit('join', { mentor: 'test1', mentee: 'test' })
+        socket.emit('join', { mentor: 'test2', mentee: 'test3' })
         socket.on('joined', function(data){
             console.log(data)
         })        
@@ -20,15 +21,32 @@
         var input = document.getElementById("m").value
         var h4 = document.getElementById("ms")
         h4.innerText = ""        
-        socket.emit('send_msg', { data: input, room: 'test', isMentor: true })
+        socket.emit('send_msg', { data: input, mentor: 'test1', mentee: 'test', _id: 'test1', lang: 'es' })
         socket.on('msg_sent', function(data) {
-            h4.innerText = data['data']
+            if (data['_id'] === 'test1')
+                h4.innerText = data['data']
+        })
+        input.value = ""
+    }
+
+    function handleInput1(){
+        var input = document.getElementById("m1").value
+        var h4 = document.getElementById("ms1")
+        h4.innerText = ""        
+        socket.emit('send_msg', { data: input, mentor: 'test2', mentee: 'test3', _id: 'test3', lang: 'en' })
+        socket.on('msg_sent', function(data) {
+            if (data['_id'] === 'test3')
+                h4.innerText = data['data']
         })
         input.value = ""
     }
 </script>
 <body>
+    <h5>Mentee</h5>
     <input id="m" type="text" autocomplete="off" /><button onclick="handleInput()">Send</button>
     <h4 id="ms"></h4>
+    <h5>Mentor</h5>
+    <input id="m1" type="text" autocomplete="off" /><button onclick="handleInput1()">Send</button>
+    <h4 id="ms1"></h4>
 </body>
 </html>

@@ -4,3 +4,4 @@ requests
 pydash
 flask_socketio
 eventlet
+google-cloud-translate==1.2.0
